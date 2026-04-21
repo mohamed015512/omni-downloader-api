@@ -522,7 +522,34 @@ def process_extracted_info(info: Dict[str, Any], url: str, format_type: str) -> 
     
     hls_info = None
     for f in all_formats:
-        if f.get('proto
+                if f.get('protocol') == 'm3u8_native' or '.m3u8' in f.get('url', ''):
+            hls_info = {
+                'url': f.get('url'),
+                'protocol': 'm3u8',
+                'resolution': f"{f.get('height')}p" if f.get('height') else 'unknown'
+            }
+        if f.get('protocol') == 'http_dash_segments' or '.mpd' in f.get('url', ''):
+            dash_info = {
+                'url': f.get('url'),
+                'protocol': 'dash'
+            }
+
+    # تنسيق الرد النهائي وترتيب الجودات
+    qualities.sort(key=lambda x: int(x['quality'].replace('p', '')) if 'p' in x['quality'] else 0, reverse=True)
+
+    return {
+        'id': info.get('id', 'unknown'),
+        'title': info.get('title', 'Video'),
+        'thumbnail': info.get('thumbnail', ''),
+        'duration': float(info.get('duration', 0) or 0),
+        'platform': identify_platform(url),
+        'qualities': qualities,
+        'hls_info': hls_info,
+        'dash_info': dash_info,
+        'estimated_size': estimated_size,
+        'extracted_at': datetime.now().isoformat()
+}
+
 # ==================== متابعة الكود ====================
 
 # ==================== مسار POST /extract (الرئيسي) ====================

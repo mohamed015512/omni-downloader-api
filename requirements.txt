@@ -1,5 +1,10 @@
-Flask
-flask-cors
+fastapi
+uvicorn[standard]
 yt-dlp
-python-dotenv
-gunicorn
+python-multipart
+pydantic
+beautifulsoup4
+lxml
+aiohttp
+m3u8
+cachetools

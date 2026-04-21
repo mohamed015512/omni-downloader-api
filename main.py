@@ -520,17 +520,21 @@ def process_extracted_info(info: Dict[str, Any], url: str, format_type: str) -> 
         else:
             estimated_size = f"{size_bytes / (1024 * 1024):.1f} MB"
     
-    hls_info = None
+        hls_info = None
+    dash_info = None
     for f in all_formats:
-                if f.get('protocol') == 'm3u8_native' or '.m3u8' in f.get('url', ''):
+        protocol = f.get('protocol', '')
+        f_url = f.get('url', '')
+        
+        if protocol == 'm3u8_native' or '.m3u8' in f_url:
             hls_info = {
-                'url': f.get('url'),
+                'url': f_url,
                 'protocol': 'm3u8',
                 'resolution': f"{f.get('height')}p" if f.get('height') else 'unknown'
             }
-        if f.get('protocol') == 'http_dash_segments' or '.mpd' in f.get('url', ''):
+        if protocol == 'http_dash_segments' or '.mpd' in f_url:
             dash_info = {
-                'url': f.get('url'),
+                'url': f_url,
                 'protocol': 'dash'
             }
 
